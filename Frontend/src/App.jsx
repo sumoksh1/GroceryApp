@@ -9,13 +9,14 @@ import useAppStore from "./store/appStore";
 import Auth from "./models/Auth";
 import ProductCategory from "./pages/ProductCategory";
 import { Toaster } from "react-hot-toast";
+import Footer from "./components/Footer";
 
 const App = () => {
   // const isSeller = useAppStore((state) => state.isSeller);
   const showUserLogin = useAppStore((state) => state.showUserLogin);
   const isSellerPath = useLocation().pathname.includes("seller");
   const fetchProducts = useAppStore((state) => state.fetchProducts);
-  
+
   fetchProducts();
   return (
     <div className="text-default min-h-screen">
@@ -32,8 +33,9 @@ const App = () => {
           <Route path="/my-orders" element={<MyOrders />} />
         </Routes>
       </div>
+      {!isSellerPath && <Footer />}
     </div>
   );
 };
 
-export default App; 
+export default App;
