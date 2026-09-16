@@ -17,7 +17,6 @@ const BestSeller = () => {
       </div>
     </div>
   );
-  console.log("BestSeller products:", products);
 };
 
 export default BestSeller;

@@ -76,7 +76,15 @@ const Navbar = () => {
                 >
                   My Orders
                 </li>
-                <li className="p-1.5 cursor-pointer">Logouts</li>
+                <li
+                  onClick={() => {
+                    // setShowUserLogin(false);
+                    setUser(null);
+                  }}
+                  className="p-1.5 cursor-pointer"
+                >
+                  Logout
+                </li>
               </ul>
             </div>
           </>
@@ -84,7 +92,7 @@ const Navbar = () => {
           <button
             onClick={() => {
               setShowUserLogin(true);
-              setUser;
+              // setUser(true);
             }}
             className="cursor-pointer px-8 py-2 bg-indigo-500 hover:bg-indigo-600 transition text-white rounded-full"
           >
@@ -132,7 +140,7 @@ const Navbar = () => {
                 >
                   My Orders
                 </li>
-                <li className="p-1.5 cursor-pointer">Logouts</li>
+                <li className="p-1.5 cursor-pointer">Logout</li>
               </ul>
             </div>
           </>

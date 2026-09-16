@@ -1,12 +1,12 @@
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import { assets } from "../assets/assets";
 import useAppStore from "../store/appStore";
 
 const ProductCard = ({ product }) => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const currency = useAppStore((state) => state.currency);
   const addToCart = useAppStore((state) => state.addToCart);
-  const updateCartItem = useAppStore((state) => state.updateCartItem);
+  // const updateCartItem = useAppStore((state) => state.updateCartItem);
   const removeFromCart = useAppStore((state) => state.removeFromCart);
   const cartItems = useAppStore((state) => state.cartItems);
 
