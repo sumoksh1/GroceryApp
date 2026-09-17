@@ -12,12 +12,14 @@ const useAppStore = create((set) => ({
   showUserLogin: false,
   products: [],
   cartItems: {},
+  searchQuery: "",
 
   setUser: (user) => set({ user }),
   setIsSeller: (isSeller) => set({ isSeller }),
   setShowUserLogin: (showUserLogin) => set({ showUserLogin }),
   setProducts: (products) => set({ products }),
   setCartItems: (cartItems) => set({ cartItems }),
+  setSearchQuery: (searchQuery) => set({ searchQuery }),
   addToCart: (itemId) => {
     set((state) => {
       let cartData = structuredClone(state.cartItems);
