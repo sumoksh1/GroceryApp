@@ -9,7 +9,7 @@ const ProductCard = ({ product }) => {
   // const updateCartItem = useAppStore((state) => state.updateCartItem);
   const removeFromCart = useAppStore((state) => state.removeFromCart);
   // const cartItems = useAppStore((state) => state.cartItems);
-  const quantity = useAppStore((state) => state.cartItems[product._id]);
+  const quantity = useAppStore((state) => state.cartItems[product?._id]);
 
   return (
       product && (

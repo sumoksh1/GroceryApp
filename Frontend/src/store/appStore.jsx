@@ -40,7 +40,7 @@ const useAppStore = create((set, get) => ({
         set((state) => {
             let cartData = structuredClone(state.cartItems);
             cartData[itemId] = quantity;
-            get().setCartItems(cartData);
+            // get().setCartItems(cartData);
             return { cartItems: cartData };
         });
         toast.success("Cart updated");
