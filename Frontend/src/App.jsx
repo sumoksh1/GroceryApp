@@ -10,6 +10,7 @@ import Auth from "./models/Auth";
 import ProductCategory from "./pages/ProductCategory";
 import { Toaster } from "react-hot-toast";
 import Footer from "./components/Footer";
+import AddAddress from "./pages/AddAddress";
 
 const App = () => {
   // const isSeller = useAppStore((state) => state.isSeller);
@@ -31,6 +32,8 @@ const App = () => {
           <Route path="/products/:category/:id" element={<ProductDetails />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/my-orders" element={<MyOrders />} />
+          <Route path="/add-address" element={<AddAddress />} />
+
         </Routes>
       </div>
       {!isSellerPath && <Footer />}

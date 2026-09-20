@@ -17,9 +17,9 @@ const Cart = () => {
     const getCartCount = useAppStore((state) => state.getCartCount);
     const updateCartItem = useAppStore((state) => state.updateCartItem);
     const getCartAmount = useAppStore((state) => state.getCartAmount);
-    
+
     const navigate = useNavigate();
-    
+
     const getCart = () => {
         let tempArray = [];
         for (const key in cartItems) {
@@ -38,12 +38,12 @@ const Cart = () => {
         }
     }, [products, cartItems]);
 
-    return (products.length > 0) && cartItems ? (
-      <div className="flex flex-col md:flex-row mt-16">
+    return products.length > 0 && cartItems ? (
+        <div className="flex flex-col md:flex-row mt-16">
             <div className="flex-1 max-w-4xl">
                 <h1 className="text-3xl font-medium mb-6">
                     Shopping Cart{" "}
-                    <span className="text-sm text-indigo-500">
+                    <span className="text-sm text-primary">
                         {getCartCount()} Items
                     </span>
                 </h1>
@@ -86,7 +86,16 @@ const Cart = () => {
                                     </p>
                                     <div className="flex items-center">
                                         <p>Qty:</p>
-                                        <select className="outline-none">
+                                        <select
+                                            onChange={(e) =>
+                                                updateCartItem(
+                                                    product._id,
+                                                    Number(e.target.value),
+                                                )
+                                            }
+                                            value={cartItems[product._id]}
+                                            className="outline-none"
+                                        >
                                             {Array(
                                                 cartItems[product._id] > 9
                                                     ? cartItems[product._id]
@@ -111,11 +120,11 @@ const Cart = () => {
                             {product.offerPrice * product.quantity}
                         </p>
                         <button
-                            onClick={() => removeFromCart()}
+                            onClick={() => removeFromCart(product._id)}
                             className="cursor-pointer mx-auto"
                         >
                             <img
-                                src={assets.refresh_icon}
+                                src={assets.remove_icon}
                                 alt="remove"
                                 className="inline-block w-6 h-6"
                             />
@@ -128,7 +137,7 @@ const Cart = () => {
                         navigate("/products");
                         scrollTo(0, 0);
                     }}
-                    className="group cursor-pointer flex items-center mt-8 gap-2 text-indigo-500 font-medium"
+                    className="group cursor-pointer flex items-center mt-8 gap-2 text-primary font-medium"
                 >
                     <img
                         className="group-hover:-translate-x-1 transition"
@@ -157,7 +166,7 @@ const Cart = () => {
                         </p>
                         <button
                             onClick={() => setShowAddress(!showAddress)}
-                            className="text-indigo-500 hover:underline cursor-pointer"
+                            className="text-primary hover:underline cursor-pointer"
                         >
                             Change
                         </button>
@@ -177,7 +186,7 @@ const Cart = () => {
                                 ))}
                                 <p
                                     onClick={() => navigate("/add-address")}
-                                    className="text-indigo-500 text-center cursor-pointer p-2 hover:bg-indigo-500/10"
+                                    className="text-primary text-center cursor-pointer p-2 hover:bg-primary/10"
                                 >
                                     Add address
                                 </p>
@@ -230,7 +239,7 @@ const Cart = () => {
 
                 <button
                     onClick={placeOrder}
-                    className="w-full py-3 mt-6 cursor-pointer bg-indigo-500 text-white font-medium hover:bg-indigo-600 transition"
+                    className="w-full py-3 mt-6 cursor-pointer bg-primary text-white font-medium hover:bg-primary-dull transition"
                 >
                     {paymentOption === "COD"
                         ? "Place Order"
