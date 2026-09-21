@@ -83,6 +83,7 @@ const ProductDetails = () => {
                                                 : assets.star_dull_icon
                                         }
                                         alt=""
+                                        key={i}
                                         className="md:w-4 w-3.5"
                                     />
                                 ))}
