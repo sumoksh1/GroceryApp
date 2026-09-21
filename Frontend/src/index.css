@@ -7,5 +7,9 @@
 
 @theme {
   --color-primary: #4ebc8a;
-  --color-primary-dull: #364e43
+  --color-primary-dull: #44ae7c
+}
+
+.no-scrollbar :: ::-webkit-scrollbar{
+  display: none;
 }
