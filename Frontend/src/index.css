@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap");
 @import "tailwindcss";
 
 * {
@@ -7,9 +7,9 @@
 
 @theme {
   --color-primary: #4ebc8a;
-  --color-primary-dull: #44ae7c
+  --color-primary-dull: #44ae7c;
 }
 
-.no-scrollbar :: ::-webkit-scrollbar{
+.no-scrollbar :: ::-webkit-scrollbar {
   display: none;
 }
