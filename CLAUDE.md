@@ -26,6 +26,10 @@ No test framework is configured.
 ## Architecture
 
 - **State:** one global Zustand store, `src/store/appStore.jsx` (`useAppStore`). It holds `user`, `isSeller`, `showUserLogin`, `products`, `cartItems`, `searchQuery` and the cart actions. Components subscribe with selectors, e.g. `useAppStore((s) => s.addToCart)`. There is no React Context. `react-hot-toast` toasts are fired from inside the store actions.
+- **Rule: always use selectors, never subscribe to the whole store.**
+  - Write `useAppStore((s) => s.cartItems)`, one selector per value. Never write `useAppStore()`, and never destructure its result, e.g. `const { getCartCount } = useAppStore()`. Subscribing to the whole store re-renders the component on every store change.
+  - For derived getters (`getCartCount`, `getCartAmount`), call them inside the selector, e.g. `useAppStore((s) => s.getCartCount())`, so the selector returns a number. Selecting only the function reference never triggers a re-render when the cart changes.
+  - Don't return a new object or array from a selector. If you need several values at once, wrap the selector in `useShallow` from `zustand/react/shallow`.
 - **Cart shape:** `cartItems` is a map of `{ [productId]: quantity }`. `getCartCount()` and `getCartAmount()` are derived by looking up `products` by `_id` and using `offerPrice`.
 - **Data is mocked:** `fetchProducts()` loads `dummyProducts` from `src/assets/assets.js`. That file is also the central registry for every image/icon (`assets`), plus `categories`, `footerLinks`, `features`, `dummyAddress` and `dummyOrders`. To add an image, import it there and add it to the `assets` export. Product objects look like `{ _id, name, category, price, offerPrice, image: [], description: [], inStock }`.
 - **Auth is stubbed:** `src/models/Auth.jsx` (a login/register modal shown when `showUserLogin` is true) and `src/components/seller/SellerLogin.jsx` only flip store flags (`user`, `isSeller`). No real API calls are made yet.

@@ -1,23 +1,15 @@
-import { useState, useEffect } from "react";
 import ProductCard from "../components/ProductCard";
 import useAppStore from "../store/appStore";
 
 const AllProducts = () => {
   const products = useAppStore((state) => state.products);
   const searchQuery = useAppStore((state) => state.searchQuery);
-  const [filteredProducts, setFilteredProducts] = useState([]);
-
-  useEffect(() => {
-    if (searchQuery.length > 0) {
-      setFilteredProducts(
-        products.filter((product) =>
+  const filteredProducts =
+    searchQuery.length > 0
+      ? products.filter((product) =>
           product.name.toLowerCase().includes(searchQuery.toLowerCase()),
-        ),
-      );
-    } else {
-      setFilteredProducts(products);
-    }
-  }, [searchQuery, products]);
+        )
+      : products;
 
   return (
     <div className="mt-16 flex flex-col">
@@ -30,8 +22,8 @@ const AllProducts = () => {
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-6 mt-6">
         {filteredProducts
           .filter((product) => product.inStock)
-          .map((product, index) => (
-            <ProductCard key={index} product={product} />
+          .map((product) => (
+            <ProductCard key={product._id} product={product} />
           ))}
       </div>
     </div>

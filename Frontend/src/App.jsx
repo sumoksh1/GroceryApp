@@ -20,7 +20,6 @@ import Orders from "./pages/seller/Orders";
 
 const App = () => {
   const isSeller = useAppStore((state) => state.isSeller);
-  const showUserLogin = useAppStore((state) => state.showUserLogin);
   const isSellerPath = useLocation().pathname.includes("seller");
   const fetchProducts = useAppStore((state) => state.fetchProducts);
 
@@ -31,7 +30,7 @@ const App = () => {
   return (
     <div className="text-default min-h-screen text-gray-700 bg-white">
       {isSellerPath ? null : <Navbar />}
-      {showUserLogin ? <Auth /> : null}
+      <Auth />
 
       <Toaster />
 

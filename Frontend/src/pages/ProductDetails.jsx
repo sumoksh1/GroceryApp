@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import useAppStore from "../store/appStore";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { assets } from "../assets/assets";
@@ -11,24 +11,19 @@ const ProductDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const [relatdProducts, setRelatdProducts] = useState([]);
-  const [thumbnail, setThumbnail] = useState(null);
+  const [selectedThumbnail, setThumbnail] = useState(null);
 
   const product = products.find((item) => item._id === id);
 
-  useEffect(() => {
-    if (products.length > 0) {
-      let productsCopy = products.slice();
-      productsCopy = productsCopy.filter(
-        (item) => product.category === item.category,
-      );
-      setRelatdProducts(productsCopy.slice(0, 5));
-    }
-  }, [products]);
+  // Show the clicked image if it belongs to this product, otherwise its first
+  // image; switching products falls back to the first image without an effect.
+  const thumbnail = product?.image.includes(selectedThumbnail)
+    ? selectedThumbnail
+    : (product?.image[0] ?? null);
 
-  useEffect(() => {
-    setThumbnail(product?.image[0] ? product.image[0] : null);
-  }, [product]);
+  const relatdProducts = products
+    .filter((item) => item.category === product?.category)
+    .slice(0, 5);
 
   return (
     product && (
@@ -130,8 +125,8 @@ const ProductDetails = () => {
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-6 mt-6 w-full">
             {relatdProducts
               .filter(() => product.inStock)
-              .map((product, index) => (
-                <ProductCard key={index} product={product} />
+              .map((product) => (
+                <ProductCard key={product._id} product={product} />
               ))}
           </div>
           <button
