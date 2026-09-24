@@ -1,7 +1,7 @@
 import React from "react";
 import useAppStore from "../store/appStore";
 
-const Auth = () => {
+const AuthModal = () => {
   const [state, setState] = React.useState("login");
   const [name, setName] = React.useState("");
   const [email, setEmail] = React.useState("");
@@ -100,4 +100,12 @@ const Auth = () => {
     </div>
   );
 };
+
+// Reads showUserLogin here instead of in App, so opening/closing the popup
+// rerenders only this component, not the whole page.
+const Auth = () => {
+  const showUserLogin = useAppStore((state) => state.showUserLogin);
+  return showUserLogin ? <AuthModal /> : null;
+};
+
 export default Auth;

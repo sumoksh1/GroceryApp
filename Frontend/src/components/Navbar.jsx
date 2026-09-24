@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import useAppstore from "../store/appStore";
 import { assets } from "../assets/assets";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const Navbar = () => {
     const [open, setOpen] = useState(false);
@@ -10,15 +10,18 @@ const Navbar = () => {
     const setUser = useAppstore((state) => state.setUser);
     const setShowUserLogin = useAppstore((state) => state.setShowUserLogin);
     const navigate = useNavigate();
-    const searchQuery = useAppstore((state) => state.searchQuery);
+    const { pathname } = useLocation();
     const setSearchQuery = useAppstore((state) => state.setSearchQuery);
-    const { getCartCount } = useAppstore();
+    const cartCount = useAppstore((state) => state.getCartCount());
 
-    useEffect(() => {
-        if (searchQuery.length > 0) {
-            navigate(`/products`);
+    // Only navigate when not already on /products; navigating to the same
+    // path on every keystroke pushes a history entry and rerenders App.
+    const handleSearch = (e) => {
+        setSearchQuery(e.target.value);
+        if (e.target.value.length > 0 && pathname !== "/products") {
+            navigate("/products");
         }
-    }, [searchQuery]);
+    };
 
     return (
         <nav className="flex items-center justify-between px-6 md:px-16 lg:px-24 xl:px-32 py-4 border-b border-gray-300 bg-white relative transition-all">
@@ -35,7 +38,7 @@ const Navbar = () => {
 
                 <div className="hidden lg:flex items-center text-sm gap-2 border border-gray-300 px-3 rounded-full">
                     <input
-                        onChange={(e) => setSearchQuery(e.target.value)}
+                        onChange={handleSearch}
                         className="py-1.5 w-full bg-transparent outline-none placeholder-gray-500"
                         type="text"
                         placeholder="Search products"
@@ -71,7 +74,7 @@ const Navbar = () => {
                 >
                     <img src={assets.cart_icon} alt="" className="w-6 h-7" />
                     <button className="absolute -top-2 -right-3 text-xs text-white bg-indigo-500 w-[18px] h-[18px] rounded-full">
-                        {getCartCount()}
+                        {cartCount}
                     </button>
                 </div>
 
@@ -123,7 +126,7 @@ const Navbar = () => {
                 >
                     <img src={assets.cart_icon} alt="" className="w-6 h-7" />
                     <button className="absolute -top-2 -right-3 text-xs text-white bg-indigo-500 w-[18px] h-[18px] rounded-full">
-                        {getCartCount()}
+                        {cartCount}
                     </button>
                 </div>
                 <button
@@ -139,7 +142,7 @@ const Navbar = () => {
 
             {open && (
                 <div
-                    className={`${open ? "flex" : "hidden"} absolute top-[60px] left-0 w-full bg-white shadow-md py-4 flex-col items-start gap-2 px-5 text-sm md:hidden`}
+                    className="flex absolute top-[60px] left-0 z-30 w-full bg-white shadow-md py-4 flex-col items-start gap-2 px-5 text-sm md:hidden"
                 >
                     <Link to="/" onClick={() => setOpen(false)}>
                         Home

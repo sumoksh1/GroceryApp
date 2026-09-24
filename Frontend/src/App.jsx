@@ -19,58 +19,46 @@ import ProductList from "./pages/seller/ProductList";
 import Orders from "./pages/seller/Orders";
 
 const App = () => {
-    const isSeller = useAppStore((state) => state.isSeller);
-    const showUserLogin = useAppStore((state) => state.showUserLogin);
-    const isSellerPath = useLocation().pathname.includes("seller");
-    const fetchProducts = useAppStore((state) => state.fetchProducts);
+  const isSeller = useAppStore((state) => state.isSeller);
+  const isSellerPath = useLocation().pathname.includes("seller");
+  const fetchProducts = useAppStore((state) => state.fetchProducts);
 
-    useEffect(() => {
-        fetchProducts();
-    }, [fetchProducts]);
+  useEffect(() => {
+    fetchProducts();
+  }, [fetchProducts]);
 
-    return (
-        <div className="text-default min-h-screen text-gray-700 bg-white">
-            {isSellerPath ? null : <Navbar />}
-            {showUserLogin ? <Auth /> : null}
+  return (
+    <div className="text-default min-h-screen text-gray-700 bg-white">
+      {isSellerPath ? null : <Navbar />}
+      <Auth />
 
-            <Toaster />
+      <Toaster />
 
-            <div
-                className={`${isSellerPath ? "" : "px-6 md:px-16 lg:px-24 xl:px-32"}`}
-            >
-                <Routes>
-                    <Route path="/" element={<Home />} />
-                    <Route path="/products" element={<Products />} />
-                    <Route
-                        path="/products/:category"
-                        element={<ProductCategory />}
-                    />
-                    <Route
-                        path="/products/:category/:id"
-                        element={<ProductDetails />}
-                    />
-                    <Route path="/cart" element={<Cart />} />
-                    <Route path="/add-address" element={<AddAddress />} />
-                    <Route path="/my-orders" element={<MyOrders />} />
-                    <Route
-                        path="/seller"
-                        element={isSeller ? <SellerLayout /> : <SellerLogin />}
-                    >
-                        <Route
-                            index
-                            element={isSeller ? <AddProduct /> : null}
-                        ></Route>
-                        <Route
-                            path="product-list"
-                            element={<ProductList />}
-                        ></Route>
-                        <Route path="orders" element={<Orders />}></Route>
-                    </Route>
-                </Routes>
-            </div>
-            {!isSellerPath && <Footer />}
-        </div>
-    );
+      <div
+        className={`${isSellerPath ? "" : "px-6 md:px-16 lg:px-24 xl:px-32"}`}
+      >
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/products" element={<Products />} />
+          <Route path="/products/:category" element={<ProductCategory />} />
+          <Route path="/products/:category/:id" element={<ProductDetails />} />
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/add-address" element={<AddAddress />} />
+          <Route path="/my-orders" element={<MyOrders />} />
+          <Route
+            path="/seller"
+            element={isSeller ? <SellerLayout /> : <SellerLogin />}
+          >
+            <Route index element={isSeller ? <AddProduct /> : null}></Route>
+            <Route path="product-list" element={<ProductList />}></Route>
+            <Route path="orders" element={<Orders />}></Route>
+          </Route>
+        </Routes>
+      </div>
+
+      {!isSellerPath && <Footer />}
+    </div>
+  );
 };
 
 export default App;

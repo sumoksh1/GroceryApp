@@ -1,11 +1,10 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import useAppStore from "../store/appStore";
 import { useNavigate } from "react-router-dom";
 import { assets, dummyAddress } from "../assets/assets";
 
 const Cart = () => {
-    const [cartArray, setCartArray] = useState([]);
-    const [addresses, setAdresses] = useState(dummyAddress);
+    const [addresses] = useState(dummyAddress);
     const [showAddress, setShowAddress] = useState(false);
     const [selectedAddress, setSelectedAddress] = useState(dummyAddress[0]);
     const [paymentOption, setPaymentOption] = useState("COD");
@@ -14,29 +13,20 @@ const Cart = () => {
     const currency = useAppStore((state) => state.currency);
     const cartItems = useAppStore((state) => state.cartItems);
     const removeFromCart = useAppStore((state) => state.removeFromCart);
-    const getCartCount = useAppStore((state) => state.getCartCount);
+    const cartCount = useAppStore((state) => state.getCartCount());
     const updateCartItem = useAppStore((state) => state.updateCartItem);
-    const getCartAmount = useAppStore((state) => state.getCartAmount);
+    const cartAmount = useAppStore((state) => state.getCartAmount());
 
     const navigate = useNavigate();
 
-    const getCart = () => {
-        let tempArray = [];
-        for (const key in cartItems) {
-            const product = products.find((item) => item._id === key);
-            product.quantity = cartItems[key];
-            tempArray.push(product);
-        }
-        setCartArray(tempArray);
-    };
+    // Derived on every render from the store; copies each product so the
+    // shared product objects in the store are never mutated.
+    const cartArray = Object.keys(cartItems).map((id) => ({
+        ...products.find((item) => item._id === id),
+        quantity: cartItems[id],
+    }));
 
     const placeOrder = async () => {};
-
-    useEffect(() => {
-        if (products.length > 0 && cartItems) {
-            getCart();
-        }
-    }, [products, cartItems]);
 
     return products.length > 0 && cartItems ? (
         <div className="flex flex-col md:flex-row mt-16">
@@ -44,7 +34,7 @@ const Cart = () => {
                 <h1 className="text-3xl font-medium mb-6">
                     Shopping Cart{" "}
                     <span className="text-sm text-primary">
-                        {getCartCount()} Items
+                        {cartCount} Items
                     </span>
                 </h1>
 
@@ -54,9 +44,9 @@ const Cart = () => {
                     <p className="text-center">Action</p>
                 </div>
 
-                {cartArray.map((product, index) => (
+                {cartArray.map((product) => (
                     <div
-                        key={index}
+                        key={product._id}
                         className="grid grid-cols-[2fr_1fr_1fr] text-gray-500 items-center text-sm md:text-base font-medium pt-3"
                     >
                         <div className="flex items-center md:gap-6 gap-3">
@@ -172,8 +162,9 @@ const Cart = () => {
                         </button>
                         {showAddress && (
                             <div className="absolute top-12 py-1 bg-white border border-gray-300 text-sm w-full">
-                                {addresses.map((address, index) => (
+                                {addresses.map((address) => (
                                     <p
+                                        key={address._id}
                                         onClick={() => {
                                             setShowAddress(false);
                                             setSelectedAddress(address);
@@ -214,7 +205,7 @@ const Cart = () => {
                         <span>Price</span>
                         <span>
                             {currency}
-                            {getCartAmount()}
+                            {cartAmount}
                         </span>
                     </p>
                     <p className="flex justify-between">
@@ -225,14 +216,14 @@ const Cart = () => {
                         <span>Tax (2%)</span>
                         <span>
                             {currency}
-                            {(getCartAmount() * 2) / 100}
+                            {(cartAmount * 2) / 100}
                         </span>
                     </p>
                     <p className="flex justify-between text-lg font-medium mt-3">
                         <span>Total Amount:</span>
                         <span>
                             {currency}
-                            {getCartAmount() + (getCartAmount() * 2) / 100}
+                            {cartAmount + (cartAmount * 2) / 100}
                         </span>
                     </p>
                 </div>
