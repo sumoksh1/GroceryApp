@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import useAppStore from "../../store/appStore";
 import { useNavigate } from "react-router-dom";
+import axios from "axios"
+import toast from "react-hot-toast";
 
 const SellerLogin = () => {
     const isSeller = useAppStore((state) => state.isSeller);
@@ -11,10 +13,21 @@ const SellerLogin = () => {
     const [password, setPassword] = useState("");
 
     const onSubmitHandler = async (e) => {
-        e.preventDefault();
-        setIsSeller(true);
-    };
-
+        try {
+            e.preventDefault();
+            const {data} = await axios.post("/api/seller/login", {email, password})
+            if(data.success) {
+                setIsSeller(true)
+                navigate("/seller")
+            }
+            else{
+                toast.error(data.message)
+            }
+        } catch (error) {
+            toast.error(error.message)
+        }
+    }
+    
     useEffect(() => {
         if (isSeller) {
             navigate("/seller");
