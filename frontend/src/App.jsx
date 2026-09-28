@@ -25,9 +25,12 @@ const App = () => {
   const fetchSeller = useAppStore((state) => state.fetchSeller);
 
   useEffect(() => {
-    fetchSeller()
     fetchProducts();
   }, [fetchProducts]);
+
+  useEffect(() => {
+    fetchSeller();
+  }, []);
 
   return (
     <div className="text-default min-h-screen text-gray-700 bg-white">

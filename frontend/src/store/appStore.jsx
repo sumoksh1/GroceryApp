@@ -31,6 +31,7 @@ const useAppStore = create((set, get) => ({
         get().setIsSeller(false);
       }
     } catch (e) {
+      toast.error(e.message);
       get().setIsSeller(false);
     }
   },
