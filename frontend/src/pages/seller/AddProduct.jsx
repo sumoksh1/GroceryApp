@@ -14,6 +14,8 @@ const AddProduct = () => {
   const onSubmitHandler = async (e) => {
     try {
       e.preventDefault();
+      if (!files.some(Boolean)) return toast.error("Add at least one image");
+
       const productData = {
         name,
         description: description.split("\n"),
@@ -25,9 +27,7 @@ const AddProduct = () => {
       const formData = new FormData();   //FormData is the browser's built-in way to send multipart/form-data
       formData.append("productData", JSON.stringify(productData));
 
-      for (let i = 0; i < files.length; i++) {
-        formData.append("images", files[i]);
-      }
+      files.filter(Boolean).forEach((file) => formData.append("images", file));
 
       const { data } = await axios.post("/api/product/add", formData);
       if (data.success) {
@@ -37,8 +37,7 @@ const AddProduct = () => {
         setCategory("");
         setPrice("");
         setOfferPrice("");
-        setFiles("");
-        
+        setFiles([]);
       } else {
         toast.error(data.message);
       }
