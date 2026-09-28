@@ -22,10 +22,15 @@ const App = () => {
   const isSeller = useAppStore((state) => state.isSeller);
   const isSellerPath = useLocation().pathname.includes("seller");
   const fetchProducts = useAppStore((state) => state.fetchProducts);
+  const fetchSeller = useAppStore((state) => state.fetchSeller);
 
   useEffect(() => {
     fetchProducts();
   }, [fetchProducts]);
+
+  useEffect(() => {
+    fetchSeller();
+  }, []);
 
   return (
     <div className="text-default min-h-screen text-gray-700 bg-white">
