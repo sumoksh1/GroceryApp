@@ -38,6 +38,7 @@ const AddProduct = () => {
         setPrice("");
         setOfferPrice("");
         setFiles("");
+        
       } else {
         toast.error(data.message);
       }
