@@ -3,195 +3,204 @@ import { Link } from "react-router-dom";
 import useAppstore from "../store/appStore";
 import { assets } from "../assets/assets";
 import { useLocation, useNavigate } from "react-router-dom";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 const Navbar = () => {
-    const [open, setOpen] = useState(false);
-    const user = useAppstore((state) => state.user);
-    const setUser = useAppstore((state) => state.setUser);
-    const setShowUserLogin = useAppstore((state) => state.setShowUserLogin);
-    const navigate = useNavigate();
-    const { pathname } = useLocation();
-    const setSearchQuery = useAppstore((state) => state.setSearchQuery);
-    const cartCount = useAppstore((state) => state.getCartCount());
+  const [open, setOpen] = useState(false);
+  const user = useAppstore((state) => state.user);
+  const setUser = useAppstore((state) => state.setUser);
+  const setShowUserLogin = useAppstore((state) => state.setShowUserLogin);
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const setSearchQuery = useAppstore((state) => state.setSearchQuery);
+  const cartCount = useAppstore((state) => state.getCartCount());
 
-    // Only navigate when not already on /products; navigating to the same
-    // path on every keystroke pushes a history entry and rerenders App.
-    const handleSearch = (e) => {
-        setSearchQuery(e.target.value);
-        if (e.target.value.length > 0 && pathname !== "/products") {
-            navigate("/products");
-        }
-    };
+  const logout = async () => {
+    try {
+      const { data } = await axios.get("/api/user/logout");
+      if (data.success) {
+        toast.success(data.message);
+        setUser(null);
+        navigate("/");
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
 
-    return (
-        <nav className="flex items-center justify-between px-6 md:px-16 lg:px-24 xl:px-32 py-4 border-b border-gray-300 bg-white relative transition-all">
-            <Link to="/">
-                <h1 className="text-2xl font-bold text-orange-600">
-                    Green Cart
-                </h1>
-            </Link>
+  // Only navigate when not already on /products; navigating to the same
+  // path on every keystroke pushes a history entry and rerenders App.
+  const handleSearch = (e) => {
+    setSearchQuery(e.target.value);
+    if (e.target.value.length > 0 && pathname !== "/products") {
+      navigate("/products");
+    }
+  };
 
-            {/* Desktop Menu */}
-            <div className="hidden sm:flex items-center gap-8">
-                <Link to="/">Home</Link>
-                <Link to="/products">All Products</Link>
+  return (
+    <nav className="flex items-center justify-between px-6 md:px-16 lg:px-24 xl:px-32 py-4 border-b border-gray-300 bg-white relative transition-all">
+      <Link to="/">
+        <h1 className="text-2xl font-bold text-orange-600">Green Cart</h1>
+      </Link>
 
-                <div className="hidden lg:flex items-center text-sm gap-2 border border-gray-300 px-3 rounded-full">
-                    <input
-                        onChange={handleSearch}
-                        className="py-1.5 w-full bg-transparent outline-none placeholder-gray-500"
-                        type="text"
-                        placeholder="Search products"
-                    />
-                    <svg
-                        width="16"
-                        height="16"
-                        viewBox="0 0 16 16"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                    >
-                        <path
-                            d="M10.836 10.615 15 14.695"
-                            stroke="#7A7B7D"
-                            strokeWidth="1.2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                        />
-                        <path
-                            clip-rule="evenodd"
-                            d="M9.141 11.738c2.729-1.136 4.001-4.224 2.841-6.898S7.67.921 4.942 2.057C2.211 3.193.94 6.281 2.1 8.955s4.312 3.92 7.041 2.783"
-                            stroke="#7A7B7D"
-                            stroke-width="1.2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                        />
-                    </svg>
-                </div>
+      {/* Desktop Menu */}
+      <div className="hidden sm:flex items-center gap-8">
+        <Link to="/">Home</Link>
+        <Link to="/products">All Products</Link>
 
-                <div
-                    onClick={() => navigate("/cart")}
-                    className="relative cursor-pointer"
+        <div className="hidden lg:flex items-center text-sm gap-2 border border-gray-300 px-3 rounded-full">
+          <input
+            onChange={handleSearch}
+            className="py-1.5 w-full bg-transparent outline-none placeholder-gray-500"
+            type="text"
+            placeholder="Search products"
+          />
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M10.836 10.615 15 14.695"
+              stroke="#7A7B7D"
+              strokeWidth="1.2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path
+              clip-rule="evenodd"
+              d="M9.141 11.738c2.729-1.136 4.001-4.224 2.841-6.898S7.67.921 4.942 2.057C2.211 3.193.94 6.281 2.1 8.955s4.312 3.92 7.041 2.783"
+              stroke="#7A7B7D"
+              stroke-width="1.2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </div>
+
+        <div
+          onClick={() => navigate("/cart")}
+          className="relative cursor-pointer"
+        >
+          <img src={assets.cart_icon} alt="" className="w-6 h-7" />
+          <button className="absolute -top-2 -right-3 text-xs text-white bg-indigo-500 w-[18px] h-[18px] rounded-full">
+            {cartCount}
+          </button>
+        </div>
+
+        {user ? (
+          <>
+            <div className="relative group">
+              <img src={assets.profile_icon} alt="" className="w-10" />
+              <ul className="hidden group-hover:block absolute top-10 right-0 bg-white shadow-md rounded-md border border-gray-200 py-2 w-30 z-40 text-sm">
+                <li
+                  onClick={() => {
+                    navigate("/my-orders");
+                  }}
+                  className="p-1.5 cursor-pointer"
                 >
-                    <img src={assets.cart_icon} alt="" className="w-6 h-7" />
-                    <button className="absolute -top-2 -right-3 text-xs text-white bg-indigo-500 w-[18px] h-[18px] rounded-full">
-                        {cartCount}
-                    </button>
-                </div>
-
-                {user ? (
-                    <>
-                        <div className="relative group">
-                            <img
-                                src={assets.profile_icon}
-                                alt=""
-                                className="w-10"
-                            />
-                            <ul className="hidden group-hover:block absolute top-10 right-0 bg-white shadow-md rounded-md border border-gray-200 py-2 w-30 z-40 text-sm">
-                                <li
-                                    onClick={() => {
-                                        navigate("/my-orders");
-                                    }}
-                                    className="p-1.5 cursor-pointer"
-                                >
-                                    My Orders
-                                </li>
-                                <li
-                                    onClick={() => {
-                                        setUser(null);
-                                        navigate("/");
-                                    }}
-                                    className="p-1.5 cursor-pointer"
-                                >
-                                    Logout
-                                </li>
-                            </ul>
-                        </div>
-                    </>
-                ) : (
-                    <button
-                        onClick={() => {
-                            setShowUserLogin(true);
-                        }}
-                        className="cursor-pointer px-8 py-2 bg-indigo-500 hover:bg-indigo-600 transition text-white rounded-full"
-                    >
-                        Login
-                    </button>
-                )}
+                  My Orders
+                </li>
+                <li
+                  onClick={() => {
+                    logout();
+                  }}
+                  className="p-1.5 cursor-pointer"
+                >
+                  Logout
+                </li>
+              </ul>
             </div>
+          </>
+        ) : (
+          <button
+            onClick={() => {
+              setShowUserLogin(true);
+            }}
+            className="cursor-pointer px-8 py-2 bg-indigo-500 hover:bg-indigo-600 transition text-white rounded-full"
+          >
+            Login
+          </button>
+        )}
+      </div>
 
-            <div className="flex items-center gap-6 sm:hidden">
-                <div
-                    onClick={() => navigate("/cart")}
-                    className="relative cursor-pointer"
-                >
-                    <img src={assets.cart_icon} alt="" className="w-6 h-7" />
-                    <button className="absolute -top-2 -right-3 text-xs text-white bg-indigo-500 w-[18px] h-[18px] rounded-full">
-                        {cartCount}
-                    </button>
-                </div>
-                <button
-                    onClick={() => (open ? setOpen(false) : setOpen(true))}
-                    aria-label="Menu"
-                    className=""
-                >
-                    <img src={assets.menu_icon} alt="menu" />
-                </button>
-            </div>
+      <div className="flex items-center gap-6 sm:hidden">
+        <div
+          onClick={() => navigate("/cart")}
+          className="relative cursor-pointer"
+        >
+          <img src={assets.cart_icon} alt="" className="w-6 h-7" />
+          <button className="absolute -top-2 -right-3 text-xs text-white bg-indigo-500 w-[18px] h-[18px] rounded-full">
+            {cartCount}
+          </button>
+        </div>
+        <button
+          onClick={() => (open ? setOpen(false) : setOpen(true))}
+          aria-label="Menu"
+          className=""
+        >
+          <img src={assets.menu_icon} alt="menu" />
+        </button>
+      </div>
 
-            {/* Mobile Menu */}
+      {/* Mobile Menu */}
 
-            {open && (
-                <div
-                    className="flex absolute top-[60px] left-0 z-30 w-full bg-white shadow-md py-4 flex-col items-start gap-2 px-5 text-sm md:hidden"
-                >
-                    <Link to="/" onClick={() => setOpen(false)}>
-                        Home
-                    </Link>
-                    <Link to="/products" onClick={() => setOpen(false)}>
-                        All Products
-                    </Link>
-                    <Link to="/products" onClick={() => setOpen(false)}>
-                        My Orders
-                    </Link>
-                    <Link to="/products" onClick={() => setOpen(false)}>
-                        Contact
-                    </Link>
+      {open && (
+        <div className="flex absolute top-[60px] left-0 z-30 w-full bg-white shadow-md py-4 flex-col items-start gap-2 px-5 text-sm md:hidden">
+          <Link to="/" onClick={() => setOpen(false)}>
+            Home
+          </Link>
+          <Link to="/products" onClick={() => setOpen(false)}>
+            All Products
+          </Link>
+          <Link to="/products" onClick={() => setOpen(false)}>
+            My Orders
+          </Link>
+          <Link to="/products" onClick={() => setOpen(false)}>
+            Contact
+          </Link>
 
-                    {user ? (
-                        <>
-                            <div className="relative group">
-                                <img
-                                    src={assets.profile_icon}
-                                    alt=""
-                                    className="w-10"
-                                />
-                                <ul className="hidden group-hover:block absolute top-10 right-0 bg-white shadow-md rounded-md border border-gray-200 py-2 w-30 z-40 text-sm">
-                                    <li
-                                        onClick={() => {
-                                            navigate("/my-orders");
-                                        }}
-                                        className="p-1.5 cursor-pointer"
-                                    >
-                                        My Orders
-                                    </li>
-                                    <li className="p-1.5 cursor-pointer">
-                                        Logout
-                                    </li>
-                                </ul>
-                            </div>
-                        </>
-                    ) : (
-                        <button
-                            onClick={() => setShowUserLogin(true)}
-                            className="cursor-pointer px-8 py-2 bg-indigo-500 hover:bg-primary transition text-white rounded-full"
-                        >
-                            Login
-                        </button>
-                    )}
-                </div>
-            )}
-        </nav>
-    );
+          {user ? (
+            <>
+              <div className="relative group">
+                <img src={assets.profile_icon} alt="" className="w-10" />
+                <ul className="hidden group-hover:block absolute top-10 right-0 bg-white shadow-md rounded-md border border-gray-200 py-2 w-30 z-40 text-sm">
+                  <li
+                    onClick={() => {
+                      navigate("/my-orders");
+                    }}
+                    className="p-1.5 cursor-pointer"
+                  >
+                    My Orders
+                  </li>
+                  <li
+                    onClick={() => {
+                      logout();
+                    }}
+                    className="p-1.5 cursor-pointer"
+                  >
+                    Logout
+                  </li>
+                </ul>
+              </div>
+            </>
+          ) : (
+            <button
+              onClick={() => setShowUserLogin(true)}
+              className="cursor-pointer px-8 py-2 bg-indigo-500 hover:bg-primary transition text-white rounded-full"
+            >
+              Login
+            </button>
+          )}
+        </div>
+      )}
+    </nav>
+  );
 };
 
 export default Navbar;

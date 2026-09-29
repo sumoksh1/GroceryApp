@@ -7,7 +7,6 @@ export const addProduct = async (req, res) => {
     let productData = JSON.parse(req.body.productData);
 
     const images = req.files; //from multer
-    console.log(req.files);
     let imagesUrl = await Promise.all(
       images.map(async (item) => {
         let result = await cloudinary.uploader.upload(item.path, {
@@ -17,7 +16,6 @@ export const addProduct = async (req, res) => {
         return result.secure_url;
       }),
     );
-    console.log(req.files);
 
     await Product.create({ ...productData, image: imagesUrl });
     res.json({ success: true, message: "Product Added" });

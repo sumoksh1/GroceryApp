@@ -22,14 +22,18 @@ const App = () => {
   const isSeller = useAppStore((state) => state.isSeller);
   const isSellerPath = useLocation().pathname.includes("seller");
   const fetchProducts = useAppStore((state) => state.fetchProducts);
+  const fetchUser = useAppStore((state) => state.fetchUser);
   const fetchSeller = useAppStore((state) => state.fetchSeller);
 
-  useEffect(() => {
-    fetchProducts();
-  }, [fetchProducts]);
+  // useEffect(() => {
+  //   fetchProducts();
+  // }, [fetchProducts]);
 
   useEffect(() => {
-    fetchSeller();
+    console.log("effect running");
+    fetchUser().then(() => console.log("fetchUser done"));
+    fetchProducts().then(() => console.log("fetch products done"));
+    fetchSeller().then(() => console.log("fetchSeller done"));
   }, []);
 
   return (
