@@ -23,12 +23,12 @@ const productSchema = new mongoose.Schema(
       required: true,
     },
     category: {
-      type: Array,
+      type: String,
       required: true,
     },
     inStock: {
       type: Boolean,
-      required: true,
+      default: true,
     },
   },
   { timestamps: true },

@@ -3,6 +3,7 @@ import useAppStore from "../store/appStore";
 
 const BestSeller = () => {
   const products = useAppStore((state) => state.products);
+  // console.log(products);
 
   return (
     <div className="mt-16">

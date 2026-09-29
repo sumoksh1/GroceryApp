@@ -20,7 +20,7 @@ export const sellerLogin = async (req, res) => {
         maxAge: 7 * 24 * 60 * 60 * 1000,
       });
 
-      return res.json({ success: true, message: "logged in" });
+      return res.json({ success: true, message: "Logged in" });
     } else {
       return res.json({ success: false, message: "Invalid credentials" });
     }

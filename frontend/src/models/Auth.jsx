@@ -1,5 +1,8 @@
 import React from "react";
 import useAppStore from "../store/appStore";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const AuthModal = () => {
   const [state, setState] = React.useState("login");
@@ -7,13 +10,26 @@ const AuthModal = () => {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const setUser = useAppStore((state) => state.setUser);
+  const navigate = useNavigate();
+
   const submitHandler = async (e) => {
-    e.preventDefault();
-    setUser({
-      email: "test@gmail.com",
-      name: "test",
-    });
-    setShowUserLogin(false);
+    try {
+      e.preventDefault();
+      const { data } = await axios.post(`/api/user/${state}`, {
+        name,
+        email,
+        password,
+      });
+      if (data.success) {
+        navigate("/");
+        setUser(data.user);
+        setShowUserLogin(false);
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
   };
   const setShowUserLogin = useAppStore((state) => state.setShowUserLogin);
 
@@ -88,10 +104,10 @@ const AuthModal = () => {
           </p>
         )}
         <button
-          onClick={() => {
-            setShowUserLogin(false);
-            setUser(true);
-          }}
+          // onClick={() => {
+          //   setShowUserLogin(false);
+          //   setUser(true);
+          // }}
           className="bg-primary hover:bg-primary-dull transition-all text-white w-full py-2 rounded-md cursor-pointer"
         >
           {state === "register" ? "Create Account" : "Login"}
