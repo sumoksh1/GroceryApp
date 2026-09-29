@@ -1,5 +1,4 @@
 import { create } from "zustand";
-import { dummyProducts } from "../assets/assets";
 import { toast } from "react-hot-toast";
 import axios from "axios";
 
@@ -21,6 +20,20 @@ const useAppStore = create((set, get) => ({
   setProducts: (products) => set({ products }),
   setCartItems: (cartItems) => set({ cartItems }),
   setSearchQuery: (searchQuery) => set({ searchQuery }),
+
+  fetchUser: async () => {
+    try {
+      const { data } = await axios.get("/api/user/is-auth");
+
+      if (data.success) {
+        get().setUser(data.user);
+        get().setCartItems(data.user.cartItems);
+      }
+    } catch (error) {
+      toast.error(error.message);
+      get().setUser(null);
+    }
+  },
 
   fetchSeller: async () => {
     try {
@@ -55,7 +68,6 @@ const useAppStore = create((set, get) => ({
     set((state) => {
       let cartData = structuredClone(state.cartItems);
       cartData[itemId] = quantity;
-      // get().setCartItems(cartData);
       return { cartItems: cartData };
     });
     toast.success("Cart updated");
@@ -76,7 +88,16 @@ const useAppStore = create((set, get) => ({
   },
 
   fetchProducts: async () => {
-    set({ products: dummyProducts });
+    try {
+      const { data } = await axios.get("/api/product/list");
+      if (data.success) {
+        get().setProducts(data.products);
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
   },
 
   getCartCount: () => {
