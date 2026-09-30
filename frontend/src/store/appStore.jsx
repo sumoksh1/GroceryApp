@@ -73,6 +73,18 @@ const useAppStore = create((set, get) => ({
     toast.success("Cart updated");
   },
 
+  updateCart: async () => {
+    const { cartItems } = get();
+    try {
+      const { data } = await axios.post("/api/cart/update", { cartItems });
+      if (!data.success) {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
+  },
+
   removeFromCart: (itemId) => {
     set((state) => {
       let cartData = structuredClone(state.cartItems);
@@ -114,7 +126,7 @@ const useAppStore = create((set, get) => ({
     let totalAmount = 0;
     for (const items in cartItems) {
       let itemInfo = products.find((product) => product._id === items);
-      if (cartItems[items] > 0) {
+      if (itemInfo && cartItems[items] > 0) {
         totalAmount += itemInfo.offerPrice * cartItems[items];
       }
     }
