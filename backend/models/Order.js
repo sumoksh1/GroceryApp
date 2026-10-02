@@ -39,6 +39,6 @@ const orderSchema = new mongoose.Schema(
   { timestamps:true },
 );
 
-const Order = mongoose.models.user || mongoose.model("order", orderSchema);
+const Order = mongoose.models.order || mongoose.model("order", orderSchema);
 
 export default Order;

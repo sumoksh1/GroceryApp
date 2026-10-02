@@ -1,5 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { assets } from "../assets/assets";
+import axios from "axios";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+import useAppStore from "../store/appStore";
 
 const InputField = ({ type, placeholder, name, handleChange, address }) => {
   return (
@@ -28,6 +32,9 @@ const AddAddress = () => {
     phone: "",
   });
 
+  const navigate = useNavigate();
+  const user = useAppStore((state) => state.user);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setAdresses((prevAddress) => ({
@@ -37,8 +44,27 @@ const AddAddress = () => {
   };
 
   const onSubmitHandler = async (e) => {
-    e.preventDefault();
+    try {
+      e.preventDefault();
+      const { data } = await axios.post("/api/address/add", {
+        address,
+      });
+      if (data.success) {
+        navigate("/cart");
+        toast.success(data.message);
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
   };
+
+  useEffect(() => {
+    if (!user) {
+      navigate("/cart");
+    }
+  });
 
   return (
     <div className="mt-16 pb-16">
@@ -94,7 +120,7 @@ const AddAddress = () => {
               address={address}
             />
           </div>
-          <div className="grid grid-cols-2 gap-4" >
+          <div className="grid grid-cols-2 gap-4">
             <InputField
               type="number"
               placeholder="Zipcode"

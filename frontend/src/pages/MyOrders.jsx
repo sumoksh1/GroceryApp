@@ -1,18 +1,28 @@
 import { useEffect, useState } from "react";
 import useAppStore from "../store/appStore";
-import { dummyOrders } from "../assets/assets";
+import axios from "axios";
 
 const MyOrders = () => {
   const [myOrders, setMyOrders] = useState([]);
   const currency = useAppStore((state) => state.currency);
+  const user = useAppStore((state) => state.user);
 
   const fetchMyOrders = async () => {
-    setMyOrders(dummyOrders);
+    try {
+      const { data } = await axios.get("/api/order/user");
+      if (data.success) {
+        setMyOrders(data.orders);
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
-    fetchMyOrders();
-  }, []);
+    if (user) {
+      fetchMyOrders();
+    }
+  }, [user]);
 
   return (
     <div className="mt-16 pb-16">
@@ -34,7 +44,10 @@ const MyOrders = () => {
             </span>
           </p>
           {order.items.map((item, index) => (
-            <div key={index} className={`relative bg-white text-gray-500/70 ${order.items.length !== index + 1 && "border-b"} border-gray-300 flex flex-col md:flex-row md:items-center justify-between p-4 py-5 md:gap-16 w-full max-w-4xl `}  >
+            <div
+              key={index}
+              className={`relative bg-white text-gray-500/70 ${order.items.length !== index + 1 && "border-b"} border-gray-300 flex flex-col md:flex-row md:items-center justify-between p-4 py-5 md:gap-16 w-full max-w-4xl `}
+            >
               <div className="flex item-center mb-4 md:mb-0 ">
                 <div className="bg-primary/10 p-4 rounded-lg  ">
                   <img
@@ -51,7 +64,7 @@ const MyOrders = () => {
                 </div>
               </div>
 
-              <div className="flex flex-col justify-center md:ml-8 mb-4 md:mb-0 " >
+              <div className="flex flex-col justify-center md:ml-8 mb-4 md:mb-0 ">
                 <p>Quantity: {item.quantity || "1"}</p>
                 <p>Status: {order.status}</p>
                 <p>Date: {new Date(order.createdAt).toLocaleDateString()}</p>
